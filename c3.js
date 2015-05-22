@@ -4043,7 +4043,22 @@
             xForLegend = function (id) { return maxWidth * steps[id]; };
             yForLegend = function (id) { return margins[steps[id]] + offsets[id]; };
         } else if ($$.isLegendInset) {
-            xForLegend = function (id) { return maxWidth * steps[id] + 10; };
+            xForLegend = function (id) {
+                if (config.legend_equally) {
+                    return maxWidth * steps[id] + 10;
+                } else {
+                    var stepForId = steps[id];
+                    var previousItems = [];
+                    for (var story in steps) {
+                        if (steps[story] < stepForId) {
+                            previousItems.push(story);
+                        }
+                    }
+                    return previousItems.reduce(function (prev, curr) {
+                        return prev + widths[curr] + 10;
+                    }, 0);
+                }
+            };
             yForLegend = function (id) { return margins[steps[id]] + offsets[id]; };
         } else {
             xForLegend = function (id) { return margins[steps[id]] + offsets[id]; };
